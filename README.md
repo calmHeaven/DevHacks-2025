@@ -48,8 +48,7 @@ Enter the expenses as you spend!
 Tech Stack:
 
 -React
--TailwindCSS
--NextJS (routing)
+-Inline CSS
 -PostgreSQL
 -Spring boot
 -AWS S3 (store images)

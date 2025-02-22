@@ -1,14 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function SignUp() {
+function Signup() {
   const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission (you can later add API calls or validation)
-    console.log('Form submitted');
-    // Redirect to a different page after submission
+
+    if (!name || !email || !password) {
+      setError('🦖 RAWR! All fields are required to join the Jurassic tribe.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('🦴 Your dino password must be at least 6 characters!');
+      return;
+    }
+
+    console.log('New dino hatched! 🥚', { name, email });
+
+    // Redirect to dashboard after sign-up
     navigate('/dashboard');
   };
 
@@ -20,20 +35,20 @@ function SignUp() {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        backgroundColor: '#f0f8ff',
+        backgroundColor: '#98FB98', // Prehistoric jungle green
         padding: '20px',
       }}
     >
       <h2
         style={{
-          color: '#4B0082',
+          color: '#8B0000', // Lava red
           fontSize: '24px',
           marginBottom: '20px',
           textAlign: 'center',
+          fontFamily: "'Comic Sans MS', cursive, sans-serif",
         }}
       >
-        Welcome to Our Budget Tracking App! <br />
-        Create an Account to Get Started!
+        🦖 Welcome to the Jurassic Budget Tracker! <br /> Sign Up to Start Your Adventure
       </h2>
 
       <form
@@ -42,57 +57,99 @@ function SignUp() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          backgroundColor: '#ffffff',
+          backgroundColor: '#fff5e1', // Fossil-like color
           padding: '20px',
-          borderRadius: '8px',
-          boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-          width: '300px',
+          borderRadius: '10px',
+          boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.2)',
+          width: '320px',
+          border: '4px solid #8B4513', // Tree bark frame
         }}
       >
+        {error && (
+          <p
+            style={{
+              color: 'red',
+              fontSize: '14px',
+              marginBottom: '10px',
+              textAlign: 'center',
+            }}
+          >
+            {error}
+          </p>
+        )}
+
         <input
-          type="email"
-          placeholder="Enter your email"
+          type="text"
+          placeholder="🦕 Enter your dino name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           required
           style={{
             padding: '10px',
             marginBottom: '15px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
+            border: '2px solid #A0522D', // Earthy brown
+            borderRadius: '6px',
             width: '100%',
+            fontSize: '16px',
+            backgroundColor: '#FAF0E6', // Soft beige
+          }}
+        />
+        <input
+          type="email"
+          placeholder="🦴 Enter your dino email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{
+            padding: '10px',
+            marginBottom: '15px',
+            border: '2px solid #A0522D',
+            borderRadius: '6px',
+            width: '100%',
+            fontSize: '16px',
+            backgroundColor: '#FAF0E6',
           }}
         />
         <input
           type="password"
-          placeholder="Enter your password"
+          placeholder="🦖 Create a strong dino password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
           style={{
             padding: '10px',
             marginBottom: '20px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
+            border: '2px solid #A0522D',
+            borderRadius: '6px',
             width: '100%',
+            fontSize: '16px',
+            backgroundColor: '#FAF0E6',
           }}
         />
         <button
           type="submit"
           style={{
-            padding: '10px 20px',
-            backgroundColor: '#8A2BE2',
+            padding: '12px 24px',
+            backgroundColor: '#8B0000', // Lava red
             color: 'white',
             border: 'none',
-            borderRadius: '4px',
+            borderRadius: '6px',
             cursor: 'pointer',
-            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-            transition: 'background-color 0.3s ease',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            boxShadow: '0px 5px 8px rgba(0, 0, 0, 0.2)',
+            transition: 'background-color 0.3s ease, transform 0.1s',
           }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = '#7a1bc0')}
-          onMouseOut={(e) => (e.target.style.backgroundColor = '#8A2BE2')}
+          onMouseOver={(e) => (e.target.style.backgroundColor = '#600000')} // Darker lava red on hover
+          onMouseOut={(e) => (e.target.style.backgroundColor = '#8B0000')}
+          onMouseDown={(e) => (e.target.style.transform = 'scale(0.95)')}
+          onMouseUp={(e) => (e.target.style.transform = 'scale(1)')}
         >
-          Sign Up
+          🥚 Hatch My Account
         </button>
       </form>
     </div>
   );
 }
 
-export default SignUp;
+export default Signup;

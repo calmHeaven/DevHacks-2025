@@ -1,15 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
+function LoginPage() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle login logic (authentication API call can be added later)
-    console.log('Login submitted');
-    // Redirect to dashboard upon successful login
-    navigate('/dashboard');
+
+    if (!email || !password) {
+      setError('🦖 RAWR! Fill in both fields before stomping forward.');
+      return;
+    }
+
+    // Simulated authentication logic (replace with API call later)
+    if (email === 'dino@jurassic.com' && password === 'trex123') {
+      console.log('Dino login successful! 🦕');
+      navigate('/mainpage');
+    } else {
+      setError('🚨 Wrong footprint detected! Try again.');
+    }
   };
 
   return (
@@ -20,19 +32,20 @@ function Login() {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        backgroundColor: '#f0f8ff',
+        backgroundColor: '#7FDBFF', // Light blue like the Jurassic sky
         padding: '20px',
       }}
     >
       <h2
         style={{
-          color: '#4B0082',
+          color: '#228B22', // Dino green
           fontSize: '24px',
           marginBottom: '20px',
           textAlign: 'center',
+          fontFamily: "'Comic Sans MS', cursive, sans-serif", // Fun and playful
         }}
       >
-        Welcome Back! <br /> Log in to Your Budget Tracking Account
+        🦖 Welcome Back, Dino-Tamer! <br /> Log in to Your Jurassic Budget Tracker
       </h2>
 
       <form
@@ -41,57 +54,83 @@ function Login() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          backgroundColor: '#ffffff',
+          backgroundColor: '#fff8dc', // Fossil-like parchment
           padding: '20px',
-          borderRadius: '8px',
-          boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-          width: '300px',
+          borderRadius: '10px',
+          boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.2)',
+          width: '320px',
+          border: '4px solid #8B4513', // Wood-like frame
         }}
       >
+        {error && (
+          <p
+            style={{
+              color: 'red',
+              fontSize: '14px',
+              marginBottom: '10px',
+              textAlign: 'center',
+            }}
+          >
+            {error}
+          </p>
+        )}
+
         <input
           type="email"
-          placeholder="Enter your email"
+          placeholder="🦕 Enter your dino email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
           style={{
             padding: '10px',
             marginBottom: '15px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
+            border: '2px solid #A0522D', // Earthy brown
+            borderRadius: '6px',
             width: '100%',
+            fontSize: '16px',
+            backgroundColor: '#FAF0E6', // Soft beige
           }}
         />
         <input
           type="password"
-          placeholder="Enter your password"
+          placeholder="🦴 Enter your secret dino code"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
           style={{
             padding: '10px',
             marginBottom: '20px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
+            border: '2px solid #A0522D',
+            borderRadius: '6px',
             width: '100%',
+            fontSize: '16px',
+            backgroundColor: '#FAF0E6',
           }}
         />
         <button
           type="submit"
           style={{
-            padding: '10px 20px',
-            backgroundColor: '#8A2BE2',
+            padding: '12px 24px',
+            backgroundColor: '#228B22', // Dino green
             color: 'white',
             border: 'none',
-            borderRadius: '4px',
+            borderRadius: '6px',
             cursor: 'pointer',
-            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-            transition: 'background-color 0.3s ease',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            boxShadow: '0px 5px 8px rgba(0, 0, 0, 0.2)',
+            transition: 'background-color 0.3s ease, transform 0.1s',
           }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = '#7a1bc0')}
-          onMouseOut={(e) => (e.target.style.backgroundColor = '#8A2BE2')}
+          onMouseOver={(e) => (e.target.style.backgroundColor = '#006400')} // Darker green on hover
+          onMouseOut={(e) => (e.target.style.backgroundColor = '#228B22')}
+          onMouseDown={(e) => (e.target.style.transform = 'scale(0.95)')}
+          onMouseUp={(e) => (e.target.style.transform = 'scale(1)')}
         >
-          Log In
+          🦖 Stomp In
         </button>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default LoginPage;

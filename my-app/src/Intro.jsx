@@ -1,217 +1,206 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Intro = () => {
-  // State to store answers to the questions
-  const [username, setUsername] = useState('');
-  const [purpose, setPurpose] = useState('');
-  const [amount, setAmount] = useState('');
-  const [budget, setBudget] = useState('');
-  const [deadline, setDeadline] = useState('');
-  const [questionIndex, setQuestionIndex] = useState(0); // Controls which question is displayed
-  const [isGreeting, setIsGreeting] = useState(false); // State to track if the greeting is shown
+  const [username, setUsername] = useState(localStorage.getItem('username') || '');
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [isGreeting, setIsGreeting] = useState(false);
+  const [answers, setAnswers] = useState({
+    purpose: localStorage.getItem('purpose') || '',
+    amount: localStorage.getItem('amount') || '',
+    budget: localStorage.getItem('budget') || '',
+    deadline: localStorage.getItem('deadline') || '',
+  });
 
-  // CSS styling as inline styles
-  const style = {
-    container: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      backgroundColor: '#f0f4f8',
-      fontFamily: 'Arial, sans-serif',
-    },
-    questionBox: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '20px',
-      borderRadius: '8px',
-      backgroundColor: '#fff',
-      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-      transition: 'opacity 1s ease',
-      opacity: 1,
-    },
-    input: {
-      padding: '10px',
-      marginTop: '10px',
-      width: '80%',
-      borderRadius: '8px',
-      border: '1px solid #ddd',
-      fontSize: '16px',
-      outline: 'none',
-    },
-    button: {
-      padding: '10px 20px',
-      backgroundColor: '#7b5dfa',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '8px',
-      marginTop: '20px',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s',
-    },
-    buttonHover: {
-      backgroundColor: '#5e3dc6',
-    },
-  };
+  const questions = [
+    `Hey ${username}, why are you saving up?`,
+    `Cool, ${username}! How much do you want to save?`,
+    `Alright, ${username}! What's your budget for this?`,
+    `One last thing, ${username}. When do you want to hit your goal?`,
+  ];
 
-  // Event handler for each question input
-  const handleNameSubmit = (event) => {
-    event.preventDefault();
-    setIsGreeting(true); // Show greeting after name is entered
-  };
+  useEffect(() => {
+    if (questionIndex > 0) {
+      const keys = ["purpose", "amount", "budget", "deadline"];
+      localStorage.setItem(keys[questionIndex - 1], answers[keys[questionIndex - 1]]);
+    }
+  }, [answers, questionIndex]);
 
-  const handlePurposeSubmit = (event) => {
-    event.preventDefault();
-    setQuestionIndex(2); // Go to next question after purpose is submitted
-  };
-
-  const handleAmountSubmit = (event) => {
-    event.preventDefault();
-    setQuestionIndex(3); // Go to next question after amount is submitted
-  };
-
-  const handleBudgetSubmit = (event) => {
-    event.preventDefault();
-    setQuestionIndex(4); // Go to next question after budget is submitted
-  };
-
-  const handleDeadlineSubmit = (event) => {
-    event.preventDefault();
-    alert('Thank you for completing the survey!'); // End the survey after the last question
-  };
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        if (questionIndex === 0 && !isGreeting) {
+          localStorage.setItem('username', username);
+          setIsGreeting(true);
+          return;
+        }
+        setQuestionIndex((prev) => prev + 1);
+      }
+    };
+    document.addEventListener("keydown", handleKeyPress);
+    return () => document.removeEventListener("keydown", handleKeyPress);
+  }, [username, questionIndex, isGreeting]);
 
   return (
-    <div style={style.container}>
-      <div style={style.questionBox}>
-        {/* Show Greeting first after name is submitted */}
+    <div 
+      role="main" 
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        background: '#228B22', // forest green color
+        fontFamily: 'Press Start 2P, sans-serif',
+        color: '#fff',
+        textAlign: 'center',
+        position: 'relative',
+      }}
+    >
+
+      {/* Dino & Progress Bar */}
+      <div 
+        role="progressbar" 
+        aria-valuenow={(questionIndex / 4) * 100} 
+        aria-valuemin="0" 
+        aria-valuemax="100"
+        style={{
+          position: 'absolute',
+          bottom: '10px',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <img 
+          src="https://i.imgur.com/YhMoOES.png" 
+          alt="Pixelated dinosaur running" 
+          style={{
+            width: '50px',
+            height: '50px',
+            transition: 'transform 0.3s ease-in-out',
+            transform: `translateY(${questionIndex > 0 ? '-20px' : '0px'})`
+          }} 
+        />
+        <div 
+          style={{
+            width: '50%',
+            height: '8px',
+            background: '#666',
+            borderRadius: '5px',
+            marginLeft: '10px',
+            overflow: 'hidden',
+            position: 'relative',
+          }}
+        >
+          <div 
+            style={{
+              height: '100%',
+              background: '#00ff00',
+              width: `${(questionIndex / 4) * 100}%`,
+              transition: 'width 0.5s',
+            }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Question Box */}
+      <div 
+        role="dialog" 
+        aria-labelledby="question-box"
+        style={{
+          background: '#444',
+          padding: '20px',
+          borderRadius: '5px',
+          boxShadow: '5px 5px 0px #000',
+          textAlign: 'center',
+          maxWidth: '400px',
+          width: '100%',
+          animation: 'fadeIn 0.5s ease-in-out',
+          color: '#fff',
+        }}
+      >
         {questionIndex === 0 && !isGreeting && (
-          <form onSubmit={handleNameSubmit}>
-            <h2>What is your name?</h2>
-            <input
-              type="text"
-              value={username}
+          <form onSubmit={(e) => e.preventDefault()} aria-label="User Name Input">
+            <h2 id="question-box" style={{ fontSize: '14px' }}>What’s your name?</h2>
+            <input 
+              type="text" 
+              value={username} 
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your name"
-              style={style.input}
-              required
+              required 
+              aria-label="Enter your name"
+              style={{
+                width: '90%',
+                padding: '10px',
+                marginTop: '10px',
+                borderRadius: '5px',
+                border: '2px solid #000',
+                fontSize: '12px',
+                fontFamily: 'Press Start 2P, sans-serif',
+                textAlign: 'center',
+                background: '#222',
+                color: '#fff',
+              }} 
             />
-            <button
-              type="submit"
-              style={style.button}
-              onMouseOver={(e) => (e.target.style.backgroundColor = style.buttonHover.backgroundColor)}
-              onMouseOut={(e) => (e.target.style.backgroundColor = style.button.backgroundColor)}
-            >
-              Next
-            </button>
+            <p style={{ fontSize: '10px', marginTop: '5px' }}>Press ENTER to continue</p>
           </form>
         )}
 
-        {/* Display Greeting after the name is entered */}
-        {isGreeting && (
+        {isGreeting && questionIndex === 0 && (
           <div>
-            <h2>Hello, {username}! Nice to meet you.</h2>
-            <button
-              onClick={() => {
-                setIsGreeting(false);
-                setQuestionIndex(1); // Proceed to the next question after greeting
-              }}
-              style={style.button}
-              onMouseOver={(e) => (e.target.style.backgroundColor = style.buttonHover.backgroundColor)}
-              onMouseOut={(e) => (e.target.style.backgroundColor = style.button.backgroundColor)}
-            >
-              Continue
-            </button>
+            <h2 style={{ fontSize: '14px' }}>Hey, {username}! Ready to save? 🦖</h2>
+            <p style={{ fontSize: '10px' }}>Press ENTER to start</p>
           </div>
         )}
 
-        {/* Proceed with the rest of the questions after greeting */}
-        {questionIndex === 1 && !isGreeting && (
-          <form onSubmit={handlePurposeSubmit}>
-            <h2>What is the purpose of your savings journey?</h2>
-            <input
-              type="text"
-              value={purpose}
-              onChange={(e) => setPurpose(e.target.value)}
-              placeholder="e.g., buying a house, travel, etc."
-              style={style.input}
-              required
+        {questionIndex > 0 && questionIndex <= questions.length && (
+          <form onSubmit={(e) => e.preventDefault()} aria-label="User Answer Input">
+            <h2 id="question-box" style={{ fontSize: '14px' }}>{questions[questionIndex - 1]}</h2>
+            <input 
+              type={questionIndex === 3 ? "number" : questionIndex === 4 ? "date" : "text"} 
+              value={answers[Object.keys(answers)[questionIndex - 1]]}
+              onChange={(e) => setAnswers({ ...answers, [Object.keys(answers)[questionIndex - 1]]: e.target.value })}
+              required 
+              aria-label="Enter your answer"
+              style={{
+                width: '90%',
+                padding: '10px',
+                marginTop: '10px',
+                borderRadius: '5px',
+                border: '2px solid #000',
+                fontSize: '12px',
+                fontFamily: 'Press Start 2P, sans-serif',
+                textAlign: 'center',
+                background: '#222',
+                color: '#fff',
+              }}
             />
-            <button
-              type="submit"
-              style={style.button}
-              onMouseOver={(e) => (e.target.style.backgroundColor = style.buttonHover.backgroundColor)}
-              onMouseOut={(e) => (e.target.style.backgroundColor = style.button.backgroundColor)}
-            >
-              Next
-            </button>
+            <p style={{ fontSize: '10px', marginTop: '5px' }}>Press ENTER to continue</p>
           </form>
         )}
 
-        {questionIndex === 2 && (
-          <form onSubmit={handleAmountSubmit}>
-            <h2>How much do you aim to accumulate?</h2>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter the target amount"
-              style={style.input}
-              required
-            />
-            <button
-              type="submit"
-              style={style.button}
-              onMouseOver={(e) => (e.target.style.backgroundColor = style.buttonHover.backgroundColor)}
-              onMouseOut={(e) => (e.target.style.backgroundColor = style.button.backgroundColor)}
+        {questionIndex > questions.length && (
+          <div>
+            <h2 style={{ fontSize: '14px' }}>🎉 Done, {username}! Your plan is set!</h2>
+            <button 
+              onClick={() => alert("Journey Saved!")} 
+              aria-label="Finish setup"
+              style={{
+                padding: '10px',
+                backgroundColor: '#00ff00',
+                color: 'black',
+                border: 'none',
+                borderRadius: '5px',
+                fontSize: '12px',
+                fontFamily: 'Press Start 2P, sans-serif',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s',
+              }}
             >
-              Next
+              Finish 🦖
             </button>
-          </form>
-        )}
-
-        {questionIndex === 3 && (
-          <form onSubmit={handleBudgetSubmit}>
-            <h2>What is your budget for this goal?</h2>
-            <input
-              type="number"
-              value={budget}
-              onChange={(e) => setBudget(e.target.value)}
-              placeholder="Enter your budget"
-              style={style.input}
-              required
-            />
-            <button
-              type="submit"
-              style={style.button}
-              onMouseOver={(e) => (e.target.style.backgroundColor = style.buttonHover.backgroundColor)}
-              onMouseOut={(e) => (e.target.style.backgroundColor = style.button.backgroundColor)}
-            >
-              Next
-            </button>
-          </form>
-        )}
-
-        {questionIndex === 4 && (
-          <form onSubmit={handleDeadlineSubmit}>
-            <h2>By when would you like to reach your savings target?</h2>
-            <input
-              type="date"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              style={style.input}
-              required
-            />
-            <button
-              type="submit"
-              style={style.button}
-              onMouseOver={(e) => (e.target.style.backgroundColor = style.buttonHover.backgroundColor)}
-              onMouseOut={(e) => (e.target.style.backgroundColor = style.button.backgroundColor)}
-            >
-              Submit
-            </button>
-          </form>
+          </div>
         )}
       </div>
     </div>

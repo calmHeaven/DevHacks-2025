@@ -7,74 +7,103 @@ function HomePage() {
   return (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        backgroundColor: '#f0f8ff',
-        padding: '20px',
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        backgroundColor: "#98FB98", // Jurassic jungle green
+        backgroundImage: "url('https://www.publicdomainpictures.net/pictures/300000/nahled/prehistoric-jungle.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        padding: "20px",
       }}
     >
-      <h2
+      <h1
         style={{
-          color: '#4B0082',
-          fontSize: '24px',
-          marginBottom: '20px',
-          textAlign: 'center',
+          color: "#8B0000", // Lava red
+          fontSize: "30px",
+          fontWeight: "bold",
+          textAlign: "center",
+          fontFamily: "'Comic Sans MS', cursive, sans-serif",
+          textShadow: "2px 2px 5px rgba(0, 0, 0, 0.3)",
         }}
       >
-        Welcome to BudgetFriendly! <br /> Savings Start Here
-      </h2>
+        🦖 Welcome, Brave Explorer!
+      </h1>
+      <p
+        style={{
+          color: "#4B0082", // Deep jungle purple
+          fontSize: "18px",
+          marginBottom: "20px",
+          textAlign: "center",
+          fontWeight: "bold",
+          backgroundColor: "rgba(255, 255, 255, 0.7)",
+          padding: "10px",
+          borderRadius: "6px",
+        }}
+      >
+        Step into the **Jurassic Budget Tracker** – Manage your resources like a true dinosaur leader! 🌿💰
+      </p>
 
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          backgroundColor: '#ffffff',
-          padding: '20px',
-          borderRadius: '8px',
-          boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-          width: '300px',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundColor: "#fff5e1", // Fossilized parchment color
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.3)",
+          width: "300px",
+          border: "4px solid #8B4513", // Wooden border
         }}
       >
         <button
           onClick={() => navigate("/login")}
           style={{
-            padding: '10px 20px',
-            backgroundColor: '#8A2BE2',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-            transition: 'background-color 0.3s ease',
-            width: '100%',
-            marginBottom: '10px',
+            padding: "12px 24px",
+            backgroundColor: "#8B4513", // Rocky brown
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "18px",
+            fontWeight: "bold",
+            boxShadow: "0px 5px 8px rgba(0, 0, 0, 0.2)",
+            transition: "background-color 0.3s ease, transform 0.1s",
+            width: "100%",
+            marginBottom: "12px",
           }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = '#7a1bc0')}
-          onMouseOut={(e) => (e.target.style.backgroundColor = '#8A2BE2')}
+          onMouseOver={(e) => (e.target.style.backgroundColor = "#5A3310")} // Darker brown on hover
+          onMouseOut={(e) => (e.target.style.backgroundColor = "#8B4513")}
+          onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
+          onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
         >
-          Log In
+          🪨 Enter the Lost World (Log In)
         </button>
+
         <button
           onClick={() => navigate("/signup")}
           style={{
-            padding: '10px 20px',
-            backgroundColor: '#4B0082',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-            transition: 'background-color 0.3s ease',
-            width: '100%',
+            padding: "12px 24px",
+            backgroundColor: "#556B2F", 
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "18px",
+            fontWeight: "bold",
+            boxShadow: "0px 5px 8px rgba(0, 0, 0, 0.2)",
+            transition: "background-color 0.3s ease, transform 0.1s",
+            width: "100%",
           }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = '#3a0070')}
-          onMouseOut={(e) => (e.target.style.backgroundColor = '#4B0082')}
+          onMouseOver={(e) => (e.target.style.backgroundColor = "#3D4A1A")} // Darker green on hover
+          onMouseOut={(e) => (e.target.style.backgroundColor = "#556B2F")}
+          onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
+          onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
         >
-          Sign Up
+          🌿 Join the Tribe (Sign Up)
         </button>
       </div>
     </div>

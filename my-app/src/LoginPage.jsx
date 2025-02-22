@@ -15,9 +15,10 @@ function LoginPage() {
       return;
     }
 
-    // Simulated authentication logic (replace with API call later)
-    if (email === 'dino@jurassic.com' && password === 'trex123') {
-      console.log('Dino login successful! 🦕');
+    // Here you would replace this logic with a real authentication API call
+    // For now, we simply log success or failure
+    if (email && password) {
+      console.log('Login successful! 🦕');
       navigate('/mainpage');
     } else {
       setError('🚨 Wrong footprint detected! Try again.');

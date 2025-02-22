@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Intro = () => {
+  const navigate = useNavigate(); // Initialize navigate function
+
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
   const [questionIndex, setQuestionIndex] = useState(0);
   const [isGreeting, setIsGreeting] = useState(false);
@@ -184,7 +187,7 @@ const Intro = () => {
           <div>
             <h2 style={{ fontSize: '14px' }}>🎉 Done, {username}! Your plan is set!</h2>
             <button 
-              onClick={() => alert("Journey Saved!")} 
+              onClick={() => navigate('/mainpage')}
               aria-label="Finish setup"
               style={{
                 padding: '10px',

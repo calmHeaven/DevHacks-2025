@@ -22,9 +22,7 @@ function Signup() {
     }
 
     console.log('New dino hatched! 🥚', { name, email });
-
-    // Redirect to dashboard after sign-up
-    navigate('/dashboard');
+    navigate('/intro');  
   };
 
   return (

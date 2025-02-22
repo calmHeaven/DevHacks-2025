@@ -13,7 +13,7 @@ const Intro = () => {
     budget: localStorage.getItem('budget') || '',
     deadline: localStorage.getItem('deadline') || '',
   });
-
+  //const username=localStorage.getItem('username') || ''; // Get username from localStorage
   const questions = [
     `Hey ${username}, why are you saving up?`,
     `Cool, ${username}! How much do you want to save?`,

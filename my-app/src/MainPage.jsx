@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Expense from './Expense';
-import Popup from './Popup';
 
 function MainPage() {
   const [totalBudget, setTotalBudget] = useState(0);
   const [spent, setSpent] = useState(0);
   const [remaining, setRemaining] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [expenses, setExpenses] = useState([]);
-  const [isPopupVisible, setPopupVisible] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
-  
+  const [savedExpenses, setSavedExpenses] = useState([]);
+  const [expenseName, setExpenseName] = useState('');
+  const [expenseAmount, setExpenseAmount] = useState('');
+  const [expenseDate, setExpenseDate] = useState('');
+
   const username = localStorage.getItem('username');
   const initialBudget = parseFloat(localStorage.getItem('budget')) || 0;
-
-  const messages = ["Goal Reached!", "Almost There!", "Budget Exceeded!", "Halfway There!", "Spending Spike!"];
 
   useEffect(() => {
     setTotalBudget(initialBudget);
@@ -23,108 +19,147 @@ function MainPage() {
   }, [initialBudget]);
 
   useEffect(() => {
-    const totalSpent = expenses.reduce((acc, expense) => acc + expense.amount, 0);
+    const totalSpent = savedExpenses.reduce((acc, expense) => acc + (parseFloat(expense.amount) || 0), 0);
     setSpent(totalSpent);
     setRemaining(totalBudget - totalSpent);
-  }, [expenses, totalBudget]);
+  }, [savedExpenses, totalBudget]);
 
-  const openExpensesModal = () => setIsModalOpen(true);
-  const closeExpensesModal = () => setIsModalOpen(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newExpense = { name: expenseName, amount: expenseAmount, date: expenseDate };
+    const updatedExpenses = [...savedExpenses, newExpense];
+    setSavedExpenses(updatedExpenses);
+    localStorage.setItem('expenses', JSON.stringify(updatedExpenses));
+    setExpenseName('');
+    setExpenseAmount('');
+    setExpenseDate('');
+  };
 
   const history = useNavigate();
-  const openExpensesPage = () => history.push('/expenses');
-  const showRandomPopup = () => {
-    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    setPopupMessage(randomMessage);
-    setPopupVisible(true);
-  };
-  const closePopup = () => setPopupVisible(false);
-
-  const progress = (spent / totalBudget) * 100;
-
-  const handleDeleteExpense = (expenseName) => {
-    const updatedExpenses = expenses.filter(exp => exp.name !== expenseName);
-    setExpenses(updatedExpenses);
-  };
-
-  const handleUpdateExpense = (expenseName, updatedExpense) => {
-    const updatedExpenses = expenses.map(exp => exp.name === expenseName ? updatedExpense : exp);
-    setExpenses(updatedExpenses);
-  };
-
-  // Update expenses list with the new expense
-  const addExpense = (expense) => {
-    setExpenses((prevExpenses) => [...prevExpenses, expense]);
-  };
 
   return (
-    <div style={{ fontFamily: 'Comic Sans MS', padding: '10px', backgroundColor: '#c2f7f0', height: '100vh', overflow: 'hidden' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', padding: '10px', backgroundColor: '#6c9c9f', borderBottom: '2px solid #3b5d5c' }}>
-        <div style={{ fontSize: '30px', fontWeight: 'bold', color: '#f7ffff' }}>BudgetFriendly 🦖</div>
-        <button onClick={showRandomPopup} style={{ padding: '10px 15px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '18px' }}>Add New Plan</button>
+    <div style={{ fontFamily: 'Comic Sans MS', padding: '20px', background: 'linear-gradient(135deg, #ff9a9e, #fad0c4)', minHeight: '100vh' }}>
+      <header style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '30px',
+        padding: '20px',
+        backgroundColor: '#ff6f61',
+        borderRadius: '10px',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+        color: '#fff',
+        fontSize: '36px',
+        fontWeight: 'bold'
+      }}>
+        <div>BudgetFriendly 🦖</div>
       </header>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', width: '90%', marginBottom: '20px', alignItems: 'center' }}>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <div>Hello, {username}!</div>
-          <div>Total Budget: ${totalBudget}</div>
+      {/* Welcome Section */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        marginBottom: '30px',
+        color: '#3b5d5c',
+        fontSize: '20px',
+        fontWeight: '500',
+      }}>
+        <div>We have missed you dearly!</div>
+      </div>
+
+      {/* Budget Overview Section */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        marginBottom: '30px',
+        backgroundColor: '#fff',
+        padding: '15px',
+        borderRadius: '15px',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div>Total Budget</div>
+          <div style={{ fontSize: '24px', fontWeight: 'bold' }}>${totalBudget.toFixed(2)}</div>
         </div>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <div>Spent: ${spent}</div>
+        <div style={{ textAlign: 'center' }}>
+          <div>Spent</div>
+          <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ff6f61' }}>${spent.toFixed(2)}</div>
         </div>
-        <div style={{ flex: 1, textAlign: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
           <div>Remaining</div>
-          <div>{remaining}</div>
-        </div>
-        <button onClick={openExpensesModal} style={{ padding: '10px 15px', backgroundColor: '#f28d42', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '18px' }}>Add Expenses</button>
-      </div>
-
-      <div>
-        <div>Saving Progress</div>
-        <div style={{ width: '100%', height: '20px', backgroundColor: '#f1f1f1', borderRadius: '15px', marginTop: '10px' }}>
-          <div style={{ height: '100%', backgroundColor: '#f28d42', borderRadius: '15px', width: `${progress}%` }} />
+          <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#28a745' }}>${remaining.toFixed(2)}</div>
         </div>
       </div>
 
-      <div>
-        <h2>Expenses</h2>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+      {/* Expense Input Form */}
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px' }}>
+          <input 
+            type="text" 
+            placeholder="Expense Name" 
+            value={expenseName} 
+            onChange={(e) => setExpenseName(e.target.value)} 
+            required 
+            style={{ padding: '10px', borderRadius: '5px', fontSize: '16px' }}
+          />
+          <input 
+            type="number" 
+            placeholder="Amount" 
+            value={expenseAmount} 
+            onChange={(e) => setExpenseAmount(e.target.value)} 
+            required 
+            style={{ padding: '10px', borderRadius: '5px', fontSize: '16px' }}
+          />
+          <input 
+            type="date" 
+            value={expenseDate} 
+            onChange={(e) => setExpenseDate(e.target.value)} 
+            required 
+            style={{ padding: '10px', borderRadius: '5px', fontSize: '16px' }}
+          />
+          <button type="submit" 
+          style={{ padding: '10px', margin: '5px', borderRadius: '5px', cursor: 'pointer' }}
+          onMouseOver={(e) => e.target.style.backgroundColor = '#218838'}
+          onMouseOut={(e) => e.target.style.backgroundColor = '#28a745'}>
+            Submit ✅
+          </button>
+        </form>
+      </div>
+
+      {/* Expense List Table */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
+        <table 
+          border="1" 
+          style={{
+            background: '#444', 
+            color: '#fff', 
+            padding: '10px', 
+            width: '80%', 
+            textAlign: 'left',
+            borderRadius: '8px',
+            marginBottom: '30px',
+          }}
+        >
+          <caption style={{ fontSize: '16px', marginBottom: '10px' }}>Expense List</caption>
           <thead>
-            <tr style={{ backgroundColor: '#6c9c9f', color: '#fff' }}>
-              <th style={{ padding: '10px', textAlign: 'center' }}>Name</th>
-              <th style={{ padding: '10px', textAlign: 'center' }}>Amount</th>
-              <th style={{ padding: '10px', textAlign: 'center' }}>Date</th>
-              <th style={{ padding: '10px', textAlign: 'center' }}>Category</th>
-              <th style={{ padding: '10px', textAlign: 'center' }}>Actions</th>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Date</th>
             </tr>
           </thead>
           <tbody>
-            {expenses.map((expense, index) => (
-              <tr key={index} style={{ backgroundColor: '#f1f1f1' }}>
-                <td style={{ padding: '10px', textAlign: 'center' }}>{expense.name}</td>
-                <td style={{ padding: '10px', textAlign: 'center' }}>${expense.amount}</td>
-                <td style={{ padding: '10px', textAlign: 'center' }}>{expense.date}</td>
-                <td style={{ padding: '10px', textAlign: 'center' }}>{expense.category}</td>
-                <td style={{ padding: '10px', textAlign: 'center' }}>
-                  <button onClick={() => handleUpdateExpense(expense.name, { ...expense, amount: expense.amount + 10 })} style={{ padding: '5px 10px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Update</button>
-                  <button onClick={() => handleDeleteExpense(expense.name)} style={{ padding: '5px 10px', backgroundColor: '#ff4d4d', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', marginLeft: '10px' }}>Delete</button>
-                </td>
+            {savedExpenses.map((expense, index) => (
+              <tr key={index}>
+                <td>{expense.name}</td>
+                <td>${expense.amount}</td>
+                <td>{expense.date}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
-      {isPopupVisible && <Popup spent={spent} budget={totalBudget} onClose={closePopup} />}
-
-      {isModalOpen && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ backgroundColor: '#a3e2d7', padding: '20px', borderRadius: '15px', width: '300px' }}>
-            <Expense addExpense={addExpense} />
-            <button onClick={closeExpensesModal} style={{ marginTop: '10px', padding: '10px 20px', backgroundColor: '#f28d42', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '18px' }}>Close</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
